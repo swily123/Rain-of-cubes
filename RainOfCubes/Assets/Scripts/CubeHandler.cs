@@ -40,6 +40,7 @@ public class CubeHandler : MonoBehaviour
         var wait = new WaitForSeconds(secondToWait);
         yield return wait;
         _spawner.ReleaseCube(cube);
+        cube.Reset();
     }
 
     private void ChangeColorCube(Cube cube)

@@ -6,7 +6,6 @@ public class CubeConfigurator : MonoBehaviour
 
     public void Configure(GameObject cube, Vector3 position)
     {
-
         cube.transform.position = position;
         cube.transform.rotation = Quaternion.identity;
         cube.transform.localScale = Vector3.one;
@@ -28,7 +27,6 @@ public class CubeConfigurator : MonoBehaviour
 
         if (cube.GetComponent<Cube>() == false)
         {
-
             cube.AddComponent<Cube>();
         }
     }
