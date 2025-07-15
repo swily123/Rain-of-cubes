@@ -9,8 +9,11 @@ public class Platform : MonoBehaviour
     {
         if (collision.transform.TryGetComponent<Cube>(out Cube cube))
         {
-            CubeOnCollisionEntered?.Invoke(cube);
-            cube.Collide(gameObject);
+            if (cube.Collided == false)
+            {
+                CubeOnCollisionEntered?.Invoke(cube);
+                cube.Collide();
+            }
         }
     }
 }

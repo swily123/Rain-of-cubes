@@ -8,16 +8,14 @@ public class Colorist : MonoBehaviour
         Color.black, Color.blue, Color.red, Color.green, Color.cyan, Color.magenta, Color.clear, Color.yellow, Color.gray, Color.grey
     };
 
-    public Color GetRandomColor(Color currentColor)
+    public Color GetRandomColor()
     {
         Color color = Color.cyan;
 
         if (_colors.Count > 0)
         {
-            _colors.Remove(currentColor);
             int randomIndex = Random.Range(0, _colors.Count);
             color = _colors[randomIndex];
-            _colors.Add(currentColor);
         }
 
         return color;

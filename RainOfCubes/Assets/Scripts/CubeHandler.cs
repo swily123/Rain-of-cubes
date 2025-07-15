@@ -28,15 +28,8 @@ public class CubeHandler : MonoBehaviour
 
     private void ManageCube(Cube cube)
     {
-        if (cube.IsCollideWithPlatform(gameObject) == false)
-        {
-            ChangeColorCube(cube);
-        }
-
-        if (cube.Collided == false)
-        {
-            StartCoroutine(ReleaseCubeAfter(cube));
-        }
+        ChangeColorCube(cube);
+        StartCoroutine(ReleaseCubeAfter(cube));
     }
 
     private IEnumerator ReleaseCubeAfter(Cube cube)
@@ -51,6 +44,6 @@ public class CubeHandler : MonoBehaviour
 
     private void ChangeColorCube(Cube cube)
     {
-        cube.ChangeColor(_colorist.GetRandomColor(cube.CurrentColor));
+        cube.ChangeColor(_colorist.GetRandomColor());
     }
 }
