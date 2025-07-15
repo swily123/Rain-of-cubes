@@ -26,9 +26,9 @@ public class CubeHandler : MonoBehaviour
         }
     }
 
-    private void ManageCube(Cube cube, bool isCollideThisPlatfrom)
+    private void ManageCube(Cube cube)
     {
-        if (isCollideThisPlatfrom == false)
+        if (cube.IsCollideWithPlatform(gameObject) == false)
         {
             ChangeColorCube(cube);
         }
