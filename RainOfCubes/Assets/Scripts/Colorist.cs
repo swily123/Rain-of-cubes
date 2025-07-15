@@ -3,10 +3,15 @@ using UnityEngine;
 
 public class Colorist : MonoBehaviour
 {
-    private List<Color> _colors = new List<Color>()
+    private List<Color> _colors = new List<Color>();
+
+    private void Awake()
     {
-        Color.black, Color.blue, Color.red, Color.green, Color.cyan, Color.magenta, Color.clear, Color.yellow, Color.gray, Color.grey
-    };
+        _colors = new List<Color>()
+        {
+            Color.black, Color.blue, Color.red, Color.green, Color.cyan, Color.magenta, Color.clear, Color.yellow, Color.gray, Color.grey
+        };
+    }
 
     public Color GetRandomColor()
     {

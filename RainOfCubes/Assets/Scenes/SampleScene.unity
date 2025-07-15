@@ -373,7 +373,6 @@ GameObject:
   - component: {fileID: 659200040}
   - component: {fileID: 659200039}
   - component: {fileID: 659200041}
-  - component: {fileID: 659200042}
   m_Layer: 0
   m_Name: Spawner
   m_TagString: Untagged
@@ -408,7 +407,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c72a621641297ad408c72dff98c1bbb5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _cubeConfigurator: {fileID: 659200042}
+  _cubePrefab: {fileID: 8099218541305929608, guid: 8c0cc6e624288e04181a2411344d1152, type: 3}
   _zoner: {fileID: 659200041}
 --- !u!114 &659200039
 MonoBehaviour:
@@ -450,18 +449,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _spawnZoneXLength: 9
   _spawnZoneZLength: 9
---- !u!114 &659200042
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 659200036}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b2dee4948f9c4254ba57faacabe9d30b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,28 +1,38 @@
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
+[RequireComponent(typeof(MeshRenderer))]
 
 public class Cube : MonoBehaviour
 {
     [SerializeField] private Color _defualtColor = Color.white;
 
-    private bool _collidedWithPlatform = false;
 
-    public bool Collided => _collidedWithPlatform;
+    public bool Collided { get; private set; }
+    public Rigidbody Rigidbody => GetComponent<Rigidbody>();
 
     public void ChangeColor(Color color)
     {
         GetComponent<MeshRenderer>().material.color = color;
     }
 
-    public void Collide()
+    private void OnCollisionEnter(Collision collision)
     {
-        _collidedWithPlatform = true;
+        if (Collided == false)
+        {
+            return;
+        }
+
+        if (collision.transform.TryGetComponent<Platform>(out _))
+        {
+            CubeHandler.CubeOnCollisionEntered.Invoke(this);
+            Collided = true;
+        }
     }
 
     public void Reset()
     {
-        _collidedWithPlatform = false;
+        Collided = false;
         ChangeColor(_defualtColor);
     }
 }
