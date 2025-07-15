@@ -2,8 +2,8 @@ using UnityEngine;
 
 public class Zoner : MonoBehaviour
 {
-    private float _spawnZoneXLength = 6;
-    private float _spawnZoneZLength = 6;
+    [SerializeField] private float _spawnZoneXLength = 9;
+    [SerializeField] private float _spawnZoneZLength = 9;
 
     public Vector3 GetRandomPosition()
     {
