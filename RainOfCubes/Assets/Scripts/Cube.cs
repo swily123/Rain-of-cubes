@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
@@ -7,8 +8,9 @@ public class Cube : MonoBehaviour
 {
     [SerializeField] private Color _defualtColor = Color.white;
 
+    public static event Action<Cube> CubeOnCollisionEntered;
 
-    public bool Collided { get; private set; }
+    public bool Collided { get; private set; } = false;
     public Rigidbody Rigidbody => GetComponent<Rigidbody>();
 
     public void ChangeColor(Color color)
@@ -18,14 +20,14 @@ public class Cube : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (Collided == false)
+        if (Collided)
         {
             return;
         }
 
         if (collision.transform.TryGetComponent<Platform>(out _))
         {
-            CubeHandler.CubeOnCollisionEntered.Invoke(this);
+            CubeOnCollisionEntered?.Invoke(this);
             Collided = true;
         }
     }

@@ -1,6 +1,5 @@
 using System.Collections;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.Pool;
 
 public class Spawner : MonoBehaviour
@@ -12,13 +11,12 @@ public class Spawner : MonoBehaviour
     private int _poolMaxSize = 15;
     private float _repeatTime = 0.5f;
 
-    public static UnityEvent<Cube> CubeDied;
     private ObjectPool<Cube> _pool;
 
     private void Awake()
     {
         _pool = new ObjectPool<Cube>(
-            createFunc: () => Instantiate(_cubePrefab, _zoner.GetRandomPosition(), Quaternion.identity),
+            createFunc: () => Instantiate(_cubePrefab),
             actionOnGet: (obj) => Configure(obj),
             actionOnRelease: (obj) => obj.gameObject.SetActive(false),
             actionOnDestroy: (obj) => Destroy(obj.gameObject),
@@ -29,12 +27,12 @@ public class Spawner : MonoBehaviour
 
     private void OnEnable()
     {
-        CubeDied?.AddListener(ReleaseCube);
+        CubeHandler.CubeDead += ReleaseCube;
     }
 
     private void OnDisable()
     {
-        CubeDied?.RemoveAllListeners();
+        CubeHandler.CubeDead -= ReleaseCube;
     }
 
     private void Start()
@@ -65,6 +63,7 @@ public class Spawner : MonoBehaviour
 
     private void Configure(Cube cube)
     {
+        cube.transform.position = _zoner.GetRandomPosition();
         cube.transform.rotation = Quaternion.identity;
         cube.Rigidbody.velocity = Vector3.zero;
 

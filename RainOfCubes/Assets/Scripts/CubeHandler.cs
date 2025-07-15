@@ -1,22 +1,21 @@
+using System;
 using System.Collections;
 using UnityEngine;
-using UnityEngine.Events;
 
 public class CubeHandler : MonoBehaviour
 {
-    [SerializeField] private Spawner _spawner;
     [SerializeField] private Colorist _colorist;
 
-    public static UnityEvent<Cube> CubeOnCollisionEntered;
+    public static event Action<Cube> CubeDead;
 
     private void OnEnable()
     {
-        CubeOnCollisionEntered?.AddListener(ManageCube);
+        Cube.CubeOnCollisionEntered += ManageCube;
     }
 
     private void OnDisable()
     {
-        CubeOnCollisionEntered?.RemoveAllListeners();
+        Cube.CubeOnCollisionEntered -= ManageCube;
     }
 
     public void ManageCube(Cube cube)
@@ -29,9 +28,9 @@ public class CubeHandler : MonoBehaviour
     {
         int minrange = 2;
         int maxrange = 5;
-        int secondToWait = Random.Range(minrange, maxrange + 1);
+        int secondToWait = UnityEngine.Random.Range(minrange, maxrange + 1);
         yield return new WaitForSeconds(secondToWait);
-        Spawner.CubeDied.Invoke(cube);
+        CubeDead?.Invoke(cube);
         cube.Reset();
     }
 
