@@ -29,12 +29,12 @@ public class Spawner : MonoBehaviour
 
     private void OnEnable()
     {
-        CubeDied.AddListener(ReleaseCube);
+        CubeDied?.AddListener(ReleaseCube);
     }
 
     private void OnDisable()
     {
-        CubeDied.RemoveAllListeners();
+        CubeDied?.RemoveAllListeners();
     }
 
     private void Start()

@@ -11,12 +11,12 @@ public class CubeHandler : MonoBehaviour
 
     private void OnEnable()
     {
-        CubeOnCollisionEntered.AddListener(ManageCube);
+        CubeOnCollisionEntered?.AddListener(ManageCube);
     }
 
     private void OnDisable()
     {
-        CubeOnCollisionEntered.RemoveAllListeners();
+        CubeOnCollisionEntered?.RemoveAllListeners();
     }
 
     public void ManageCube(Cube cube)
