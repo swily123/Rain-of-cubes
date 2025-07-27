@@ -8,13 +8,17 @@ public class SpawnerBombs : Spawner<Bomb>
     private void OnEnable()
     {
         _spawnerCubes.CubeDespawned += SpawnBomb;
-        Released += AcrionOnBombDespawn;
     }
 
     private void OnDisable()
     {
         _spawnerCubes.CubeDespawned -= SpawnBomb;
-        Released -= AcrionOnBombDespawn;
+    }
+
+    protected override void ActionOnRelease(Bomb bomb)
+    {
+        base.ActionOnRelease(bomb);
+        DespawnBomb(bomb);
     }
 
     private void SpawnBomb(Transform point)
@@ -31,7 +35,7 @@ public class SpawnerBombs : Spawner<Bomb>
         bomb.DespawnRequested += ReleaseObject;
     }
 
-    private void AcrionOnBombDespawn(Bomb bomb)
+    private void DespawnBomb(Bomb bomb)
     {
         bomb.DespawnRequested -= ReleaseObject;
     }

@@ -10,16 +10,16 @@ public class SpawnerCubes : Spawner<Cube>
     public event Action<Transform> CubeDespawned;
     private float _spawnDelay = 1;
 
-    private void OnEnable()
+    protected override void ActionOnGet(Cube cube)
     {
-        Spawned += Configure;
-        Released += AcrionOnCubeDespawn;
+        base.ActionOnGet(cube);
+        Configure(cube);
     }
 
-    private void OnDisable()
+    protected override void ActionOnRelease(Cube cube)
     {
-        Spawned -= Configure;
-        Released -= AcrionOnCubeDespawn;
+        base.ActionOnRelease(cube);
+        DespawnCube(cube);
     }
 
     private void Start()
@@ -45,7 +45,7 @@ public class SpawnerCubes : Spawner<Cube>
         cube.DespawnRequested += ReleaseObject;
     }
 
-    private void AcrionOnCubeDespawn(Cube cube)
+    private void DespawnCube(Cube cube)
     {
         CubeDespawned?.Invoke(cube.transform);
         cube.DespawnRequested -= ReleaseObject;

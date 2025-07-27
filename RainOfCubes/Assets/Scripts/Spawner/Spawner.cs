@@ -1,5 +1,4 @@
 using System;
-using TMPro;
 using UnityEngine;
 using UnityEngine.Pool;
 
@@ -9,12 +8,11 @@ namespace Spawners
     {
         [SerializeField] private T _objectPrefab;
 
-        public event Action<T> Spawned;
-        public event Action<T> Released;
+        public override event Action<int> AllTimeObjectsChanged;
+        public override event Action<int> SpawnObjectChanged;
+        public override event Action<int> ActiveObjectsChanged;
 
         public override int SpawnCountForAllTime { get; protected set; } = 0;
-        public override int SpawnCount => _pool.CountAll;
-        public override int ActiveObjectCount => _pool.CountActive;
 
         private int _defualtCapacity = 1;
         private int _poolMaxSize = 30;
@@ -40,25 +38,27 @@ namespace Spawners
         protected T GetObject()
         {
             SpawnCountForAllTime++;
+            AllTimeObjectsChanged?.Invoke(SpawnCountForAllTime);
             return _pool.Get();
         }
 
-        private void ActionOnGet(T @object)
+        protected virtual void ActionOnGet(T @object)
         {
             @object.gameObject.SetActive(true);
-            Spawned?.Invoke(@object);
+            ActiveObjectsChanged?.Invoke(_pool.CountActive);
+            SpawnObjectChanged?.Invoke(_pool.CountAll);
+        }
+
+        protected virtual void ActionOnRelease(T @object)
+        {
+            @object.gameObject.SetActive(false);
+            ActiveObjectsChanged?.Invoke(_pool.CountActive);
         }
 
         private T Spawn()
         {
             T @object = Instantiate(_objectPrefab);
             return @object;
-        }
-
-        private void ActionOnRelease(T @object)
-        {
-            @object.gameObject.SetActive(false);
-            Released?.Invoke(@object);
         }
     }
 }

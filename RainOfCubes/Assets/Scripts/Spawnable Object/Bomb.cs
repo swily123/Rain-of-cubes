@@ -3,7 +3,6 @@ using System.Collections;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
-[RequireComponent(typeof(MeshRenderer))]
 
 public class Bomb : MonoBehaviour
 {
@@ -13,12 +12,10 @@ public class Bomb : MonoBehaviour
     public event Action<Bomb> DespawnRequested;
 
     private Rigidbody _rigidbody;
-    private MeshRenderer _meshRenderer;
 
     private void Awake()
     {
         _rigidbody = GetComponent<Rigidbody>();
-        _meshRenderer = GetComponent<MeshRenderer>();
     }
 
     public void ActionOnSpawn()
@@ -26,12 +23,12 @@ public class Bomb : MonoBehaviour
         int time = GetRandomLifeTime();
 
         StartCoroutine(ExlpodeWithTime(time));
-        StartCoroutine(SmoothlyBecomeTransparent(time));
+        StartCoroutine(_colorist.SmoothlyBecomeTransparent(time));
     }
 
     public void ResetParameters()
     {
-        _colorist.SetAlpha(_meshRenderer, 1);
+        _colorist.SetAlpha(1);
         transform.rotation = Quaternion.identity;
         _rigidbody.velocity = Vector3.zero;
         _rigidbody.angularVelocity = Vector3.zero;
@@ -51,20 +48,5 @@ public class Bomb : MonoBehaviour
         int secondToWait = UnityEngine.Random.Range(minrange, maxrange + 1);
 
         return secondToWait;
-    }
-
-    private IEnumerator SmoothlyBecomeTransparent(float duration)
-    {
-        float startAlpha = 1;
-        float step = startAlpha / duration;
-
-        while (_meshRenderer.material.color.a != 0)
-        {
-            startAlpha = _meshRenderer.material.color.a;
-            float alpha = Mathf.MoveTowards(startAlpha, 0, step * Time.deltaTime);
-            _colorist.SetAlpha(_meshRenderer, alpha);
-
-            yield return null;
-        }
     }
 }
