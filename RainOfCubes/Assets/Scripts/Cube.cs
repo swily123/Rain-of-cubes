@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
@@ -6,35 +7,57 @@ using UnityEngine;
 
 public class Cube : MonoBehaviour
 {
+    [SerializeField] private Colorist _colorist;
     [SerializeField] private Color _defualtColor = Color.white;
 
-    public static event Action<Cube> CubeOnCollisionEntered;
+    private Rigidbody _rigidbody;
+    private MeshRenderer _meshRenderer;
+    private bool _isCollided = false;
 
-    public bool Collided { get; private set; } = false;
-    public Rigidbody Rigidbody => GetComponent<Rigidbody>();
+    public event Action<Cube> DespawnRequested;
+
+    private void Awake()
+    {
+        _rigidbody = GetComponent<Rigidbody>();
+        _meshRenderer = GetComponent<MeshRenderer>();
+    }
 
     public void ChangeColor(Color color)
     {
-        GetComponent<MeshRenderer>().material.color = color;
+        _meshRenderer.material.color = color;
+    }
+
+    public void ResetParameters()
+    {
+        _isCollided = false;
+        ChangeColor(_defualtColor);
+
+        transform.rotation = Quaternion.identity;
+        _rigidbody.velocity = Vector3.zero;
+        _rigidbody.angularVelocity = Vector3.zero;
     }
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (Collided)
+        if (_isCollided)
         {
             return;
         }
 
         if (collision.transform.TryGetComponent<Platform>(out _))
         {
-            CubeOnCollisionEntered?.Invoke(this);
-            Collided = true;
+            _isCollided = true;
+            ChangeColor(_colorist.GetRandomColor());
+            StartCoroutine(ScheduleDespawn());
         }
     }
 
-    public void Reset()
+    private IEnumerator ScheduleDespawn()
     {
-        Collided = false;
-        ChangeColor(_defualtColor);
+        int minrange = 2;
+        int maxrange = 5;
+        int secondToWait = UnityEngine.Random.Range(minrange, maxrange + 1);
+        yield return new WaitForSeconds(secondToWait);
+        DespawnRequested?.Invoke(this);
     }
 }

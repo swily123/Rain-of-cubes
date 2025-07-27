@@ -1,9 +1,10 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Zoner : MonoBehaviour
 {
-    [SerializeField] private float _spawnZoneXLength = 9;
-    [SerializeField] private float _spawnZoneZLength = 9;
+    private float _spawnZoneXLength = 8;
+    private float _spawnZoneZLength = 8;
 
     public Vector3 GetRandomPosition()
     {
@@ -13,10 +14,19 @@ public class Zoner : MonoBehaviour
         return new Vector3(randomPointX, transform.position.y, randomPointZ);
     }
 
-    private void OnDrawGizmos()
+    public List<Rigidbody> GetObjectsInRadius(Transform point, float _radius)
     {
-        Gizmos.color = Color.red;
-        Gizmos.DrawLine(Vector3.right * (transform.position.x - _spawnZoneXLength), Vector3.right * (transform.position.x + _spawnZoneXLength));
-        Gizmos.DrawLine(Vector3.forward * (transform.position.z - _spawnZoneZLength), Vector3.forward * (transform.position.z + _spawnZoneZLength));
+        List<Rigidbody> rigidbodies = new List<Rigidbody>();
+        Collider[] hits = Physics.OverlapSphere(point.position, _radius);
+
+        foreach (Collider hit in hits)
+        {
+            if (hit.TryGetComponent(out Rigidbody rigidbody))
+            {
+                rigidbodies.Add(rigidbody);
+            }
+        }
+
+        return rigidbodies;
     }
 }

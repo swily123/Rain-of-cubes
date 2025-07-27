@@ -25,4 +25,11 @@ public class Colorist : MonoBehaviour
 
         return color;
     }
+
+    public void SetAlpha(MeshRenderer meshRenderer, float alpha)
+    {
+        Color color = meshRenderer.material.color;
+        color.a = alpha;
+        meshRenderer.material.color = color;
+    }
 }

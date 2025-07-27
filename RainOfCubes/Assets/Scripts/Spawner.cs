@@ -1,72 +1,58 @@
-using System.Collections;
+using System;
 using UnityEngine;
 using UnityEngine.Pool;
 
-public class Spawner : MonoBehaviour
+namespace Spawners
 {
-    [SerializeField] private Cube _cubePrefab;
-    [SerializeField] private Zoner _zoner;
-
-    private int _defualtCapacity = 1;
-    private int _poolMaxSize = 15;
-    private float _repeatTime = 0.5f;
-
-    private ObjectPool<Cube> _pool;
-
-    private void Awake()
+    public class Spawner <T> : MonoBehaviour where T : MonoBehaviour
     {
-        _pool = new ObjectPool<Cube>(
-            createFunc: () => Instantiate(_cubePrefab),
-            actionOnGet: (obj) => Configure(obj),
-            actionOnRelease: (obj) => obj.gameObject.SetActive(false),
-            actionOnDestroy: (obj) => Destroy(obj.gameObject),
-            collectionCheck: true,
-            defaultCapacity: _defualtCapacity,
-            maxSize: _poolMaxSize);
-    }
+        [SerializeField] private T _objectPrefab;
 
-    private void OnEnable()
-    {
-        CubeHandler.CubeDead += ReleaseCube;
-    }
+        private int _defualtCapacity = 1;
+        private int _poolMaxSize = 30;
 
-    private void OnDisable()
-    {
-        CubeHandler.CubeDead -= ReleaseCube;
-    }
+        private ObjectPool<T> _pool;
+        public event Action<T> Spawned;
+        public event Action<T> Released;
 
-    private void Start()
-    {
-        StartCoroutine(GetCubesWhile());
-    }
-
-    public void ReleaseCube(Cube cube)
-    {
-        _pool.Release(cube);
-    }
-
-    private IEnumerator GetCubesWhile()
-    {
-        var wait = new WaitForSeconds(_repeatTime);
-
-        while(enabled)
+        private void Awake()
         {
-            GetCube();
-            yield return wait;
+            _pool = new ObjectPool<T>(
+                createFunc: () => Spawn(),
+                actionOnGet: (obj) => ActionOnGet(obj),
+                actionOnRelease: (obj) => ActionOnRelease(obj),
+                actionOnDestroy: (obj) => Destroy(obj.gameObject),
+                collectionCheck: true,
+                defaultCapacity: _defualtCapacity,
+                maxSize: _poolMaxSize);
         }
-    }
 
-    private void GetCube()
-    {
-        _pool.Get();
-    }
+        public T Spawn()
+        {
+            T @object = Instantiate(_objectPrefab);
+            return @object;
+        }
 
-    private void Configure(Cube cube)
-    {
-        cube.transform.position = _zoner.GetRandomPosition();
-        cube.transform.rotation = Quaternion.identity;
-        cube.Rigidbody.velocity = Vector3.zero;
+        protected void ReleaseObject(T @object)
+        {
+            _pool.Release(@object);
+        }
 
-        cube.gameObject.SetActive(true);
+        protected T GetObject()
+        {
+            return _pool.Get();
+        }
+
+        private void ActionOnGet(T @object)
+        {
+            @object.gameObject.SetActive(true);
+            Spawned?.Invoke(@object);
+        }
+
+        private void ActionOnRelease(T @object)
+        {
+            @object.gameObject.SetActive(false);
+            Released?.Invoke(@object);
+        }
     }
 }
