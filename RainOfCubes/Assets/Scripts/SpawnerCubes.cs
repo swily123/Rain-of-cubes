@@ -8,7 +8,7 @@ public class SpawnerCubes : Spawner<Cube>
     [SerializeField] protected Zoner _zoner;
 
     public event Action<Transform> CubeDespawned;
-    private float _spawnDelay = 3f;
+    private float _spawnDelay = 1;
 
     private void OnEnable()
     {

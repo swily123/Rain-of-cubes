@@ -1,19 +1,24 @@
 using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Pool;
 
 namespace Spawners
 {
-    public class Spawner <T> : MonoBehaviour where T : MonoBehaviour
+    public class Spawner <T> : BaseSpawner where T : Component
     {
         [SerializeField] private T _objectPrefab;
 
-        private int _defualtCapacity = 1;
-        private int _poolMaxSize = 30;
-
-        private ObjectPool<T> _pool;
         public event Action<T> Spawned;
         public event Action<T> Released;
+
+        public override int SpawnCountForAllTime { get; protected set; } = 0;
+        public override int SpawnCount => _pool.CountAll;
+        public override int ActiveObjectCount => _pool.CountActive;
+
+        private int _defualtCapacity = 1;
+        private int _poolMaxSize = 30;
+        private ObjectPool<T> _pool;
 
         private void Awake()
         {
@@ -27,12 +32,6 @@ namespace Spawners
                 maxSize: _poolMaxSize);
         }
 
-        public T Spawn()
-        {
-            T @object = Instantiate(_objectPrefab);
-            return @object;
-        }
-
         protected void ReleaseObject(T @object)
         {
             _pool.Release(@object);
@@ -40,6 +39,7 @@ namespace Spawners
 
         protected T GetObject()
         {
+            SpawnCountForAllTime++;
             return _pool.Get();
         }
 
@@ -47,6 +47,12 @@ namespace Spawners
         {
             @object.gameObject.SetActive(true);
             Spawned?.Invoke(@object);
+        }
+
+        private T Spawn()
+        {
+            T @object = Instantiate(_objectPrefab);
+            return @object;
         }
 
         private void ActionOnRelease(T @object)
